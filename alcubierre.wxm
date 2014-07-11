@@ -1,0 +1,127 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 13.04.0 ] */
+
+/* [wxMaxima: hide output   ] */
+/* [wxMaxima: input   start ] */
+kill(all)$ load(draw)$
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+f(%sigma,r, R) := (tanh(%sigma*(r+R)) - tanh(%sigma*(r-R)))/(2*tanh(%sigma*R));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+The following graph shows the tophat nature of the f function that multiplies
+the velocity in the ß displacement element. 
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: comment start ]
+First, make a list of f(%sigma,r, R) function for several
+values of sigma (set the ship dimension R = 1):
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+flist: makelist(f(%sigma,r, 1), %sigma, [1, 5, 10, 15, 20, 23])$
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+And plot them all:
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+wxplot2d(flist,[r,-2,2],[xlabel,"r"],[ylabel,"Warp Field (sigma = 1..23)"],[legend, false]);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+More useful, perhaps, is a 3d surface plot:
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+wxdraw3d(terminal       = png,
+         xlabel ="r", ylabel = "sigma",
+         wired_surface  = true,
+         enhanced3d     = true,
+         colorbox       = false,
+         contour_levels = 16,
+         contour        = base,
+         explicit(f(%sigma,r,1),r,-2,2,%sigma,1,23));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+Now for the theta function. For convenience, let's define pieces of the eventual function.
+First, define
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+Z(x,%rho,xs) := sqrt(%rho^2+(x-xs)^2);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+The first factor of the theta function can then be written as
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+f1(x,%rho,xs) := (x-xs)/Z(x,%rho,xs);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+f1(x,%rho,xs);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+The second factor is just the derivative of f with respect to r:
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+f2(x,%rho,%sigma,xs) := diff(f(%sigma,r, R),r);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+f2(x,%rho,%sigma,xs);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+except that we substitute the Z we defined above, for r, into this factor f2:
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+f2s(x,%rho,%sigma,xs) := subst(Z(x,%rho,xs),r,f2(x,%rho,%sigma, xs));
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+f2s(x,%rho,s,xs);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+The theta function is thus
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+%theta(x,%rho,%sigma,xs) := f1(x,%rho,xs)*f2s(x,%rho,%sigma, xs);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+%theta(x,%rho,%sigma,xs);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+And now we can plot the theta function. Again, set the ship dimension R = 1:
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+R: 1;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+wxdraw3d(terminal       = png,
+         xlabel ="x", ylabel="rho",
+         wired_surface  = true,
+         enhanced3d     = true,
+         colorbox       = false,
+         contour_levels = 16,
+         contour        = base,
+         explicit(%theta(x,%rho,8,27),x,25.5,28.5,%rho,-1.5,1.5));
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$
